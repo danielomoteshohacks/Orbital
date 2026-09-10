@@ -24,7 +24,7 @@ jobs:
         gradle-version: '8.4' # Downloads Gradle on the server since we don't have it locally
 
     - name: Build Debug APK
-      run: gradle assembleDebug # Runs the build command
+      run: gradle assembleDebug --stacktrace --info
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
