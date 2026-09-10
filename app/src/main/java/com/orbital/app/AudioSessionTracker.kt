@@ -37,17 +37,27 @@ object AudioSessionTracker {
         }
 
         try {
-            // Explicitly cast nulls to prevent Overload Resolution Ambiguity in Kotlin
-            val process = Shizuku.newProcess(
-                arrayOf("sh", "-c", "dumpsys media.audio_flinger"),
-                null as Array<String>?,
-                null as String?
+            // Shizuku v13+ made newProcess private. We use reflection to force access.
+            val clazz = Class.forName("rikka.shizuku.Shizuku")
+            val method = clazz.getDeclaredMethod(
+                "newProcess", 
+                Array<String>::class.java, 
+                Array<String>::class.java, 
+                String::class.java
             )
+            method.isAccessible = true
+            
+            // Execute the shell command as the Shizuku super-user
+            val process = method.invoke(
+                null, 
+                arrayOf("sh", "-c", "dumpsys media.audio_flinger"), 
+                null, 
+                null
+            ) as Process
 
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             val sessionRegex = Regex("Session\\s+(\\d+)")
 
-            // Replaced the while() loop with native Kotlin forEachLine
             reader.forEachLine { line ->
                 val match = sessionRegex.find(line)
                 if (match != null) {
@@ -59,6 +69,7 @@ object AudioSessionTracker {
                 }
             }
             process.waitFor()
+            
         } catch (e: Throwable) {
             Log.e(TAG, "Failed to read AudioFlinger dump via Shizuku", e)
         }
