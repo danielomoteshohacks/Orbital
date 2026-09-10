@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.orbital.app"
-        minSdk = 31 // Android 12 minimum for advanced audio APIs
+        minSdk = 31 
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -22,7 +22,16 @@ android {
     }
 
     buildFeatures {
-        prefab = true // Allows pulling pre-compiled C++ libraries like Oboe
+        prefab = true 
+    }
+
+    // ADDED: Force Java and Kotlin to use JVM 17
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     externalNativeBuild {
@@ -35,9 +44,7 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("com.google.oboe:oboe:1.9.0") // The C++ audio pipeline
-
-    // Shizuku API to grant rootless system-level permissions
+    implementation("com.google.oboe:oboe:1.9.0") 
     implementation("dev.rikka.shizuku:api:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
 }
