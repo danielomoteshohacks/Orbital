@@ -36,4 +36,8 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("com.google.oboe:oboe:1.9.0") // The C++ audio pipeline
+
+    // Shizuku API to grant rootless system-level permissions
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
 }
